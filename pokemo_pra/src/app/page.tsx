@@ -1,48 +1,34 @@
-
+"use client";
+import { fetchAllPokemon } from "./pokemonApi/FetchAllPokemon";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [pokemonList, setPokemoList] = useState<any[]>([]);
+  // const [loading, setLoading] = useState<boolean>(false);
 
-
-  const fetchPosts = async () => {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/{id or name}/`);
-    const posts = await res.json();
-    updatePost(posts)
-  };
-
- 
+  useEffect(() => {
+    async function dataList() {
+      const pokemons: any = await fetchAllPokemon();
+      console.log(pokemons);
+      setPokemoList(pokemons);
+      
+    }
+    dataList();
+  }, []);
+  
   return (
     <>
-        <input
-          type="radio"
-          id="all-characters"
-          name="category"
-          value="all-characters"
-          defaultChecked={true}
-        />
-        <label htmlFor="all-characters">全キャラクター</label>
-      </div>
+      <h1>ポケモン図鑑</h1>
 
-      <div>
-        <input
-          type="radio"
-          id="demon-slayer-corps"
-          name="category"
-          value="demon-slayer-corps"
-        />
-        <label htmlFor="demon-slayer-corps">鬼殺隊</label>
-      </div>
+      <ul>
+        {pokemonList.map((pokemon, index) => (
+          <li key={index}>
+            <img src={pokemon.image} alt={pokemon.name} />
 
-      <div>
-        <input type="radio" id="demons" name="category" value="demons" />
-        <label htmlFor="demons">鬼</label>
-      </div>
-
-      <div>
-        <input type="radio" id="pillars" name="category" value="pillars" />
-        <label htmlFor="pillars">柱</label>
-      </div>
+            <p>{pokemon.name}</p>
+          </li>
+        ))}
+      </ul>
     </>
   );
 }
-
-   
