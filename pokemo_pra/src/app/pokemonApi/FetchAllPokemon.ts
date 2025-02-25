@@ -31,16 +31,17 @@ type Poke = {
   types: { name: string }[];
 };
 
-async function  changePokemonEnNameToJaName(enName: string): Promise<string> {
+async function changePokemonEnNameToJaName(enName: string): Promise<string> {
+  const res = await fetch(
+    `https://pokeapi.co/api/v2/pokemon-species/${enName}`
+  );
 
-const res =   await fetch(`https://pokeapi.co/api/v2/pokemon-species/${enName}`)
-
-const data = await res.json()
-const jaName : string  = data.names[0].name
-return jaName
+  const data = await res.json();
+  const jaName: string = data.names[0].name;
+  return jaName;
 }
 
-function changeEnNameToJaName(enName: string) {
+function changeTypeEnNameToJaName(enName: string) {
   const typeJaName = typeNamesList.find((t) => t.name === enName);
   return typeJaName?.nameJa;
 }
@@ -60,13 +61,13 @@ export const fetchAllPokemon = async () => {
     for await (const pokemon of pokemons) {
       const res = await fetch(pokemon.url);
       const pokemonData = await res.json();
-    
+
       const poke: Poke = {
         id: pokemonData.id,
-        name: changePokemonEnNameToJaName(pokemonData.name), 
+        name: changePokemonEnNameToJaName(pokemonData.name),
         image: pokemonData?.sprites?.front_default,
         types: pokemonData?.types?.map((t: { type: { name: string } }) => ({
-          name: changeEnNameToJaName(t.type.name),
+          name: changeTypeEnNameToJaName(t.type.name),
         })),
       };
 

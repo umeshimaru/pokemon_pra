@@ -2,17 +2,12 @@
 import { fetchAllPokemon } from "./pokemonApi/FetchAllPokemon";
 import { useEffect, useState } from "react";
 
-
-
-
-
 type Poke = {
-  id: number,
-  name: Promise<string>,
-  image: string,
-  types: {name: string}[]
-}
-
+  id: number;
+  name: Promise<string>;
+  image: string;
+  types: { name: string }[];
+};
 
 export default function Home() {
   const [pokemonList, setPokemoList] = useState<Poke[]>([]);
@@ -32,13 +27,13 @@ export default function Home() {
       <ul>
         {pokemonList.map((pokemon, index) => (
           <li key={index}>
-            <a href="#">
-            <p>No:{pokemon.id}</p>
-            <img src={pokemon.image} alt={pokemon.name} />
-            <p>{pokemon.name}</p>
-            {pokemon.types.map((type, typeIndex) => (
-              <p key={`${pokemon.name}-type-${typeIndex}`}>{type.name}</p>
-            ))}
+            <a href={`./pokemon/${pokemon.id}`}>
+              <p>No:{pokemon.id}</p>
+              <img src={pokemon.image} alt={pokemon.name} />
+              <p>{pokemon.name}</p>
+              {pokemon.types.map((type, typeIndex) => (
+                <p key={`${pokemon.name}-type-${typeIndex}`}>{type.name}</p>
+              ))}
             </a>
           </li>
         ))}
