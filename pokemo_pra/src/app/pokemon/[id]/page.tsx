@@ -14,10 +14,12 @@ export default async function Pokemon({
       <div>
         <p>{pokemon.id}</p>
         <img src={pokemon.image} alt={pokemon.name} />
-        <p>{pokemon.name}</p>
-        <p>{pokemon.type}</p>
-        <p>{pokemon.height}</p>
-        <p>{pokemon.weight}</p>
+        <p>{`名前:${pokemon.name}`}</p>
+        <p>{`タイプ:${pokemon.type}`}</p>
+        <p>{`高さ:${pokemon.height}`}</p>
+        <p>{`重さ:${pokemon.weight}`}</p>
+        <br />
+        <p>説明:</p>
         <p>{pokemon.text}</p>
       </div>
     </>

@@ -26,7 +26,7 @@ const typeNamesList: { name: string; nameJa: string }[] = [
 
 type Poke = {
   id: number;
-  name: Promise<string>;
+  name: string;
   image: string;
   types: { name: string }[];
 };
@@ -64,7 +64,7 @@ export const fetchAllPokemon = async () => {
 
       const poke: Poke = {
         id: pokemonData.id,
-        name: changePokemonEnNameToJaName(pokemonData.name),
+        name: await changePokemonEnNameToJaName(pokemonData.name),
         image: pokemonData?.sprites?.front_default,
         types: pokemonData?.types?.map((t: { type: { name: string } }) => ({
           name: changeTypeEnNameToJaName(t.type.name),

@@ -8,8 +8,8 @@ export const fetchPokemon = async (id: number) => {
     image: string;
     height: number;
     weight: number;
-    text:string | undefined;
-    type:string | undefined
+    text: string | undefined;
+    type: string | undefined;
   };
 
   async function name() {
@@ -17,11 +17,11 @@ export const fetchPokemon = async (id: number) => {
     return result === undefined ? undefined : result;
   }
 
-  async function text () {
+  async function text() {
     const result = await changeEnToJa(pokemonData.name, "text");
     return result === undefined ? undefined : result;
   }
-  async function type () {
+  async function type() {
     const result = await changeEnToJa(pokemonData.name, "type");
     return result === undefined ? undefined : result;
   }
@@ -32,7 +32,7 @@ export const fetchPokemon = async (id: number) => {
     weight: pokemonData.weight,
     image: pokemonData?.sprites?.front_default,
     text: await text(),
-    type : await type()
+    type: await type(),
   };
 
   return pokemon;
