@@ -179,21 +179,21 @@ export default function PokemonPokedex({
 
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground">たかさ</span>
+                    <span className="text-muted-foreground">たかさ:</span>
                     <span className="font-medium">
-                      {selectedPokemon.height}
+                      {selectedPokemon.height}m
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground">おもさ</span>
+                    <span className="text-muted-foreground">おもさ:</span>
                     <span className="font-medium">
-                      {selectedPokemon.weight}
+                      {selectedPokemon.weight}kg
                     </span>
                   </div>
                 </div>
 
-                <DialogDescription className="text-sm mt-2">
-                  {selectedPokemon.text}
+                <DialogDescription className="text-sm mt-2" style={ {borderTop: "1px solid #999999"}}>
+                  <span>特徴: </span>{selectedPokemon.text}
                 </DialogDescription>
               </div>
             </>

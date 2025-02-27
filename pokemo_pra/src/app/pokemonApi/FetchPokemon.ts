@@ -12,17 +12,25 @@ export const fetchPokemon = async (id: number) => {
 
   async function text() {
     const result = await changeEnToJa(pokemonData.name, "text");
-    return result === undefined ? undefined : result;
+    return result === undefined ? undefined : result.replace(/\s+/g, "");
   }
   async function type() {
     const result = await changeEnToJa(pokemonData.name, "type");
     return result === undefined ? undefined : result;
   }
+
+  function toKilograms(weight: number) {
+    return weight / 10.0;
+  }
+  function toMeters(height: number) {
+    return height / 10.0;
+  }
+
   const pokemon: SelectedPokemon = {
     id: pokemonData.id,
     name: await name(),
-    height: pokemonData.height,
-    weight: pokemonData.weight,
+    height: toMeters(pokemonData.height),
+    weight: toKilograms(pokemonData.weight),
     image: pokemonData?.sprites?.front_default,
     text: await text(),
     type: await type(),
