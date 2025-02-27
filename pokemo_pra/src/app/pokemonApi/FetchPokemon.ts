@@ -1,16 +1,9 @@
 import changeEnToJa from "../common/changeEnToJa";
+import { SelectedPokemon } from "../types/pokemon";
 export const fetchPokemon = async (id: number) => {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
   const pokemonData = await res.json();
-  type Poke = {
-    id: number;
-    name: string | undefined;
-    image: string;
-    height: number;
-    weight: number;
-    text: string | undefined;
-    type: string | undefined;
-  };
+ 
 
   async function name() {
     const result = await changeEnToJa(pokemonData.name, "name");
@@ -25,7 +18,7 @@ export const fetchPokemon = async (id: number) => {
     const result = await changeEnToJa(pokemonData.name, "type");
     return result === undefined ? undefined : result;
   }
-  const pokemon: Poke = {
+  const pokemon: SelectedPokemon = {
     id: pokemonData.id,
     name: await name(),
     height: pokemonData.height,

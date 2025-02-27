@@ -4,13 +4,26 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import Poke from "../types/pokemon";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { useState } from "react";
+import { SelectedPokemon}  from "../types/pokemon";
+import { fetchPokemon } from "../pokemonApi/FetchPokemon";
 
 export default function PokemonPokedex({
   pokemonList,
 }: {
   pokemonList: Poke[];
 }) {
- 
+  const [selectedPokemon, setSelectedPokemon] = useState<SelectedPokemon>(
+    {} as SelectedPokemon);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const getTypeColor = (typeJa: string) => {
     const typeColors: { [key: string]: string } = {
       ノーマル: "bg-gray-400",
@@ -34,6 +47,12 @@ export default function PokemonPokedex({
     };
 
     return typeColors[typeJa] || "bg-gray-500";
+  };
+
+  const handlePokemonClick = async(pokemon: Poke) => {
+    const selectedPokemon: SelectedPokemon = await fetchPokemon(pokemon.id);
+    setSelectedPokemon(selectedPokemon);
+    setIsModalOpen(true);
   };
 
   return (
@@ -92,6 +111,7 @@ export default function PokemonPokedex({
               <Card
                 key={pokemon.id}
                 className="group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-white/75 backdrop-blur-sm border-red-100"
+                onClick={() => handlePokemonClick(pokemon)}
               >
                 <CardHeader className="p-0 relative">
                   <div className="absolute top-2 left-2 bg-red-600 text-white px-2 py-0.5 rounded-full text-sm font-medium shadow-md">
@@ -127,6 +147,59 @@ export default function PokemonPokedex({
           </div>
         </div>
       </div>
+      {/* ポケモン詳細モーダル */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          {selectedPokemon && (
+            <>
+              <DialogHeader>
+                <div className="flex items-center justify-between">
+                  <DialogTitle className="text-xl font-bold">
+                    {selectedPokemon.name}
+                  </DialogTitle>
+                  <span className="text-sm text-muted-foreground">
+                    No.{String(selectedPokemon.id).padStart(3, "0")}
+                  </span>
+                </div>
+              </DialogHeader>
+
+              <div className="relative aspect-square mb-4 bg-gray-100 rounded-lg overflow-hidden">
+                <img
+                  src={selectedPokemon.image || "/placeholder.svg"}
+                  alt={`${selectedPokemon.name}の画像`}
+                  className="w-full h-full object-contain p-4"
+                />
+              </div>
+
+              <div className="grid gap-4">
+                <div className="flex gap-2">
+                 <span className="text-muted-foreground">{`タイプ: ${selectedPokemon.type}`}</span>
+              
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">たかさ</span>
+                    <span className="font-medium">
+                      {selectedPokemon.height}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">おもさ</span>
+                    <span className="font-medium">
+                      {selectedPokemon.weight}
+                    </span>
+                  </div>
+                </div>
+
+                <DialogDescription className="text-sm mt-2">
+                  {selectedPokemon.text}
+                </DialogDescription>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
