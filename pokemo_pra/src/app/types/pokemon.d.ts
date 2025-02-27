@@ -5,4 +5,7 @@ type Poke = {
   types: { name: string }[];
 };
 
+
+
+
 export default Poke;

@@ -1,23 +1,24 @@
 "use client";
-// import { fetchAllPokemon } from "./pokemonApi/FetchAllPokemon";
-// import { useEffect, useState } from "react";
+import { fetchAllPokemon } from "./pokemonApi/FetchAllPokemon";
+import { useEffect, useState } from "react";
 // import PokemonList from "./components/PokemonList";
-// import Poke from "./types/pokemon";
+import Poke from "./types/pokemon";
 // import SearchResults from "./components/SearchResults";
-import PokemonPokedex from "../../pokemon-pokedex";
+import PokemonPokedex from "./components/PokemonPokedex";
 
 export default function Home() {
-//   const [pokemonList, setPokemoList] = useState<Poke[]>([]);
+  const [pokemonList, setPokemoList] = useState<Poke[]>([]);
+
 //   const [searchPokemon, setPokemon] = useState<Poke | undefined>(undefined);
 //   const [error, setError] = useState<string>("");
 
-  // useEffect(() => {
-  //   async function dataList() {
-  //     const pokemons: Poke[] = await fetchAllPokemon();
-  //     setPokemoList(pokemons);
-  //   }
-  //   dataList();
-  // }, []);
+  useEffect(() => {
+    async function dataList() {
+      const pokemons: Poke[] = await fetchAllPokemon();
+      setPokemoList(pokemons);
+    }
+    dataList();
+  }, []);
 
   // const getInputText = () => {
   //   const inputHtml = document.getElementById("input-text") as HTMLInputElement;
@@ -54,7 +55,7 @@ export default function Home() {
       <ul>
         <PokemonList pokemonList={pokemonList} />
       </ul> */}
-      <PokemonPokedex />
+      <PokemonPokedex pokemonList={pokemonList}/>
     </>
   );
 }
