@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import Poke from "../types/pokemon";
+import { getTypeColor } from "../common/pokemonTypes";
 import {
   Dialog,
   DialogContent,
@@ -12,8 +13,9 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { SelectedPokemon}  from "../types/pokemon";
+import { SelectedPokemon } from "../types/pokemon";
 import { fetchPokemon } from "../pokemonApi/FetchPokemon";
+import SearchResults from "./SearchResults";
 
 export default function PokemonPokedex({
   pokemonList,
@@ -21,35 +23,45 @@ export default function PokemonPokedex({
   pokemonList: Poke[];
 }) {
   const [selectedPokemon, setSelectedPokemon] = useState<SelectedPokemon>(
-    {} as SelectedPokemon);
+    {} as SelectedPokemon
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState<string>("");
+  const [searchPokemon, setPokemon] = useState<Poke | undefined>(undefined);
 
-  const getTypeColor = (typeJa: string) => {
-    const typeColors: { [key: string]: string } = {
-      ノーマル: "bg-gray-400",
-      ほのお: "bg-red-500",
-      みず: "bg-blue-500",
-      くさ: "bg-green-500",
-      でんき: "bg-yellow-400",
-      こおり: "bg-cyan-300",
-      かくとう: "bg-orange-700",
-      どく: "bg-purple-500",
-      じめん: "bg-yellow-600",
-      ひこう: "bg-sky-400",
-      エスパー: "bg-pink-400",
-      むし: "bg-lime-500",
-      いわ: "bg-yellow-800",
-      ゴースト: "bg-purple-700",
-      ドラゴン: "bg-indigo-600",
-      あく: "bg-gray-700",
-      はがね: "bg-gray-500",
-      フェアリー: "bg-pink-300",
-    };
+  /*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * Retrieves the text input from the element with id "input-text" and checks if it is in Katakana.
+   * If the input is valid Katakana and a matching Pokémon is found in the list, sets it as the search result.
+   * Otherwise, sets an appropriate error message.
+   */
 
-    return typeColors[typeJa] || "bg-gray-500";
+  /******  5a1007b9-e205-412f-92b4-22689605ec17  *******/
+  const getInputText = () => {
+    const inputHtml = document.getElementById("input-text") as HTMLInputElement;
+    const inputText: string = inputHtml.value;
+    const regex = /^[ァ-ヶー]+$/;
+    const katakana: boolean = regex.test(inputText);
+    let error: string;
+
+    if (inputText && katakana) {
+      const pokemon: Poke | undefined = pokemonList.find(
+        (pokemon: Poke) => pokemon.name === inputText
+      );
+
+      if (pokemon === undefined) {
+        error = "ポケモンが見つかりません";
+        setError(error);
+        return;
+      }
+      setPokemon(pokemon);
+    } else {
+      error = "カタカナでポケモンの名前を入力してください";
+      setError(error);
+    }
   };
 
-  const handlePokemonClick = async(pokemon: Poke) => {
+  const handlePokemonClick = async (pokemon: Poke) => {
     const selectedPokemon: SelectedPokemon = await fetchPokemon(pokemon.id);
     setSelectedPokemon(selectedPokemon);
     setIsModalOpen(true);
@@ -88,8 +100,12 @@ export default function PokemonPokedex({
           <h1 className="text-4xl font-bold text-center mb-2 text-red-600">
             ポケモン図鑑
           </h1>
-          <p className="text-center text-muted-foreground mb-8">
+          <p className="text-center text-muted-foreground ">
             全国のポケモンを探そう！
+            
+          </p>
+          <p className="text-center text-muted-foreground mb-8">
+            ポケモン数:{pokemonList.length}匹
           </p>
 
           {/* 検索フォーム */}
@@ -98,13 +114,20 @@ export default function PokemonPokedex({
               <Input
                 placeholder="ポケモンの名前(カタカナ)を入力してください"
                 className="flex-1 bg-white/75 backdrop-blur-sm border-red-200 focus:border-red-400 focus:ring-red-400"
+                id="input-text"
               />
-              <Button className="bg-red-600 hover:bg-red-700 text-white gap-2">
-                <Search className="h-4 w-4" />
+              <Button
+                className="bg-red-600 hover:bg-red-700 text-white gap-2"
+                onClick={getInputText}
+              >
+                <Search className="h-4 w-4 " />
                 検索
               </Button>
             </div>
+            {error && <div className="text-red-500 mt-2">{error}</div>}
+         
           </div>
+          {searchPokemon && <SearchResults searchPokemon={searchPokemon} />}
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {pokemonList.map((pokemon) => (
@@ -120,7 +143,7 @@ export default function PokemonPokedex({
                   <img
                     src={pokemon.image || "/placeholder.svg"}
                     alt={`${pokemon.name}の画像`}
-                    className="w-full h-32 object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 </CardHeader>
                 <CardContent className="p-3">
@@ -173,8 +196,7 @@ export default function PokemonPokedex({
 
               <div className="grid gap-4">
                 <div className="flex gap-2">
-                 <span className="text-muted-foreground">{`タイプ: ${selectedPokemon.type}`}</span>
-              
+                  <span className="text-muted-foreground">{`タイプ: ${selectedPokemon.type}`}</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-sm">
@@ -192,8 +214,12 @@ export default function PokemonPokedex({
                   </div>
                 </div>
 
-                <DialogDescription className="text-sm mt-2" style={ {borderTop: "1px solid #999999"}}>
-                  <span>特徴: </span>{selectedPokemon.text}
+                <DialogDescription
+                  className="text-sm mt-2"
+                  style={{ borderTop: "1px solid #999999" }}
+                >
+                  <span>特徴: </span>
+                  {selectedPokemon.text}
                 </DialogDescription>
               </div>
             </>
