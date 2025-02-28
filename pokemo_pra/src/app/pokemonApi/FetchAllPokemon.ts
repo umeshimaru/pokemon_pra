@@ -31,7 +31,7 @@ function changeTypeEnNameToJaName(enName: string) {
 export const fetchAllPokemon = async () => {
   try {
     const res = await fetch(
-      "https://pokeapi.co/api/v2/pokemon/?limit=20&offset=0"
+      "https://pokeapi.co/api/v2/pokemon/?limit=200&offset=0"
     );
     if (!res.ok) {
       console.log("エラーが発生しました");
